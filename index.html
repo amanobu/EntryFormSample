@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html xml:lang="ja" lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="user-scalable=0">
+    <title>jQuery OnePage Scroll</title>
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="http://code.jquery.com/jquery-1.12.0.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.2/angular.min.js">"</script>
+    <script src="js/main.js"></script>
+    <style>
+     .ng-invalid.ng-dirty { background-color: lightpink; }
+     .ng-valid.ng-dirty { background-color: lightgreen; }
+    </style>
+  </head>
+
+  <body ng-app="formExample">
+    <div id="container" class="container" ng-controller="formCtrl">
+      <!-- novalidateでブラウザのバリデーションを無効 -->
+      <form class="form-horizontal" name="applyform" novalidate>
+        <section id="stage1" class="stageBase">
+          <div class="fieldWrap">
+            <div class="page-header text-left">
+              <h1>お申し込み情報</h1>
+            </div>
+            <div class="page-header text-left">
+              <h2>お名前・性別・生年月日</h2>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-sm-2">氏名</label>
+              <div class="col-sm-10 text-left form-inline">姓：
+                <input type="text" name="famiryname" id="famiryname" class="form-control" placeholder="姓" ng-model="form.famiryname" required ng-maxlength="8" ng-class="{'has-error': applyform.famiryname.$invalid && applyform.famiryname.$dirty}">
+                <span ng-show="applyform.famiryname.$error.maxlength" class="text-danger">長すぎだぜ!</span>
+                名：
+                <input type="text" name="firstname" id="firstname" class="form-control" placeholder="名" ng-model="form.firstname" required ng-maxlength="8" ng-class="{'has-error': applyform.firstname.$invalid && applyform.firstname.$dirty}">
+                <span ng-show="applyform.firstname.$error.maxlength" class="text-danger">長すぎだぜ!</span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-sm-2">カナ氏名</label>
+              <div class="col-sm-10 text-left form-inline">
+                カナ姓：
+                <input type="text" name="kanafamiryname" id="kanafamiryname" class="form-control" ng-model="form.kanafamiryname" required ng-maxlength="8" ng-class="{'has-error': applyform.kanafamiryname.$invalid && applyform.kanafamiryname.$dirty}">
+                <span ng-show="applyform.kanafamiryname.$error.maxlength" class="text-danger">長すぎだぜ!</span>
+                カナ名：
+                <input type="text" name="kanafirstname" id="kanafirstname" class="form-control" ng-model="form.kanafirstname" required ng-maxlength="8" ng-class="{'has-error': applyform.kanafirstname.$invalid && applyform.kanafirstname.$dirty}">
+                <span ng-show="applyform.kanafirstname.$error.maxlength" class="text-danger">長すぎだぜ!</span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-sm-2">性別</label>
+              <div class="col-sm-10 text-left">
+                <input type="radio" name="sex" id="sex0" value="0" ng-model="form.sex" >
+                男
+                <input type="radio" name="sex" id="sex1" value="1" ng-model="form.sex" >
+                女
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-sm-2">生年月日</label>
+              <div class="col-sm-10 text-left form-inline">
+                <input type="text" name="yyyy" id="famiryname" class="form-control" placeholder="西暦" ng-model="form.birth_yyyy" required ng-maxlength="4">
+                年
+                <select class="form-control" name="mm" ng-model="form.birth_mm" ng-options="mm for mm in month" required>
+                </select>
+                月
+                <select class="form-control" name="dd" ng-model="form.birth_dd" ng-options="dd for dd in day" required>
+                </select>
+                日
+              </div>
+            </div>
+          </div>
+        </section>
+        <section id="stage2" class="stageBase">
+          <div class="fieldWrap">
+            <div class="page-header text-left">
+              <h2>ご自宅住所・電話番号</h2>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label" for="livingform">住居形態</label>
+              <div class="col-sm-10 text-left">
+                <input type="radio" name="livingform" id="livingform0" value="0" ng-model="form.livingform">
+                一戸建て
+                <input type="radio" name="livingform" id="livingform1" value="1" ng-model="form.livingform">
+                集合住宅
+              </div>              
+            </div>            
+            <div class="form-group">
+              <label class="col-sm-2 control-label" for="zip">郵便番号</label>
+              <div class="col-sm-3">
+                <input type="text" id="zip" class="form-control" placeholder="郵便番号" ng-model="form.zip">
+              </div>
+              <div class="col-sm-2">
+                <input type="button" value="郵便番号検索" class="btn btn-primary" ng-click="zipsearch()">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label">都道府県</label>
+              <div class="col-sm-10">
+                <input type="text" id="email" class="form-control" placeholder="都道府県" ng-model="form.address1">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label">市区郡名</label>
+              <div class="col-sm-10">
+                <input type="text" id="email" class="form-control" placeholder="市区郡名" ng-model="form.address2">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label">町名</label>
+              <div class="col-sm-10">
+                <input type="text" id="email" class="form-control" placeholder="町名" ng-model="form.address3">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label">丁目・番地</label>
+              <div class="col-sm-10">
+                <input type="text" id="email" class="form-control" placeholder="丁目・番地" ng-model="form.address4">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label">アパート・ビル名</label>
+              <div class="col-sm-10">
+                <input type="text" id="email" class="form-control" placeholder="アパート・ビル名" ng-model="form.address5">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label">連絡先電話番号／連絡先区分</label>
+              <div class="col-sm-10 text-left form-inline">
+                <input type="text" name="phone1" id="phone1" class="form-control" placeholder="市外局番" ng-model="form.phone1" required ng-maxlength="4">-
+                <input type="text" name="phone2" id="phone2" class="form-control" placeholder="市内局番" ng-model="form.phone2" required ng-maxlength="4">-
+                <input type="text" name="phone3" id="phone3" class="form-control" placeholder="電話番号" ng-model="form.phone3" required ng-maxlength="4">
+                <select name="phone_Div" id="phone_Div" class="form-control" ng-model="form.phone_Div" required>
+                  <option value="1" selected="selected">自宅</option>
+                  <option value="2">呼出</option>
+                </select>
+              </div>              
+            </div>
+          </div>
+        </section>
+        <section id="stage3" class="stageBase">
+          <div class="panel panel-primary">
+            <div class="panel-heading">申込確認</div>
+            <div class="panel-body">
+              <table class="table table-bordered">
+                <tbody>
+                  <tr>
+                    <td>氏名</td>
+                    <td>{{form.famiryname}}　{{form.firstname}}</td>
+                  </tr>
+                  <tr>
+                    <td>カナ氏名</td>
+                    <td>{{form.kanafamiryname}}　{{form.kanafirstname}}</td>
+                  </tr>
+                  <tr>
+                    <td>性別</td>
+                    <td>{{transsex()}}</td>
+                  </tr>
+                  <tr>
+                    <td>生年月日</td>
+                    <td>{{transBirthDay()}}</td>
+                  </tr>
+                  <tr>
+                    <td>申込者住所</td>
+                    <td>{{form.zip}}　{{form.address1}}　{{form.address2}}　{{form.address3}}　{{form.address4}}　{{form.address5}}</td>
+                  </tr>
+                  <tr>
+                    <td>連絡先電話番号／連絡先区分</td>
+                    <td>{{transPhoneNo()}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <!-- validationがすべてＯＫならばSUBMITボタンを表示 -->
+          <div class="form-group" ng-show="applyform.$valid">
+          <input type="button" value="submit" class="btn btn-primary" ng-click="validate()" >
+          </div>
+          <pre>{{form|json}}</pre>
+          <div class="alert alert-info">
+            <ul>
+              <li ng-repeat="value in errlist">
+                箇所：{{value.inputid}}
+                理由：{{value.errmsg}}
+              </li>
+            </ul>
+            <button class="close" data-dismiss="alert">&times;</button>
+          </div>
+        </section>
+      </form>
+    </div>
+  </body>
+  <script>
+   /*
+   function transsex(sex){
+     if(sex == 0)
+       return "男";
+     else if(sex == 1){
+       return "女";
+     }else{
+       return "";
+     }
+   }
+   */
+   angular.module('formExample', [])
+          .controller('formCtrl', ['$scope', '$http', function($scope,$http) {
+            //これで、取りあえず初期表示の$scope.form.***が無いというエラーがされるっぽい
+            $scope.form = {};
+            $scope.transsex = function(){
+              if($scope.form.sex == 0){
+                return "男"
+              }
+              else if($scope.form.sex == 1){
+                return "女";
+              }
+              else return "未選択";
+            };
+            $scope.transPhone_Div = function(){
+              if($scope.form.phone_Div == 1){
+                return "自宅";
+              }
+              else if($scope.form.phone_Div == 2){
+                return "呼出";
+              }
+              else return "";
+            };
+            $scope.transBirthDay = function(){
+              return $scope.form.birth_yyyy + "年" + $scope.form.birth_mm + "月" + $scope.form.birth_dd + "日";
+            };
+            $scope.transPhoneNo = function(){
+              return $scope.form.phone1 + "-" + $scope.form.phone2 + "-" + $scope.form.phone3;
+            };
+            $scope.month = [1,2,3,4,5,6,7,8,9,10,11,12];
+            $scope.day = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31];
+            
+            $scope.validate = function(){
+              console.log("validate!!!!");
+              $http({
+                method: 'GET',
+                url: 'http://localhost:3000/errlist' // 適宜変更する
+              }).success(function (data, status, headers, config) {
+                //$scope.message = data.title; // 適宜変更する
+                $scope.errlist=data
+                console.log(data);
+              }).error(function (data, status, headers, config) {
+                $scope.message = 'failed';
+              });
+              return "";
+            };
+
+            $scope.zipsearch = function(){
+              console.log("zipsearch button pushed");
+              }
+          }]);
+  </script>
+</html>
